@@ -16,3 +16,4 @@
 - Add logging to a file
 - Add --path argument
 - Add --verbose and --quiet modes
+- Add color‑coded terminal output

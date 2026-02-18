@@ -3,6 +3,14 @@ import os
 import shutil
 from datetime import datetime
 
+# ANSI color codes for terminal output only (not used in log())
+RESET = "\033[0m"
+RED = "\033[31m"
+GREEN = "\033[32m"
+YELLOW = "\033[33m"
+BLUE = "\033[34m"
+CYAN = "\033[36m"
+
 LOG_FILE = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), "organizer.log")
 
@@ -48,7 +56,12 @@ else:
 
 
 def print_msg(message, level="normal"):
-    """Print message only if it matches the current output mode."""
+    """Print message only if it matches the current output mode. Applies terminal color by level: error=red, verbose=blue; normal leaves message as-is (caller may pass pre-colored string)."""
+    if level == "error":
+        message = RED + message + RESET
+    elif level == "verbose":
+        message = BLUE + message + RESET
+    # level "normal": no default color; message may already contain ANSI codes
     if output_mode == "quiet":
         if level == "error":
             print(message)
@@ -60,15 +73,15 @@ def print_msg(message, level="normal"):
 
 
 if dry_run:
-    print_msg("DRY RUN MODE — No files will be moved.\n", level="normal")
+    print_msg(YELLOW + "DRY RUN MODE — No files will be moved.\n" + RESET, level="normal")
 
 log("=== New run started (dry-run mode)" if dry_run else "=== New run started (real mode)")
 
 folder_path = args.path if args.path else os.getcwd()
 if args.path:
-    print_msg(f"Organizing folder: {folder_path}", level="normal")
+    print_msg(CYAN + f"Organizing folder: {folder_path}" + RESET, level="normal")
 else:
-    print_msg(f"No --path provided. Using current working directory: {folder_path}", level="normal")
+    print_msg(CYAN + f"No --path provided. Using current working directory: {folder_path}" + RESET, level="normal")
 
 if not os.path.exists(folder_path):
     print_msg(f"Error: Path does not exist: {folder_path}", level="error")
@@ -111,8 +124,8 @@ if not dry_run:
 
 print_msg(str(categories), level="verbose")
 
-print_msg("\nFiles moved:", level="normal")
-print_msg("-------------", level="normal")
+print_msg(CYAN + "\nFiles moved:" + RESET, level="normal")
+print_msg(CYAN + "-------------" + RESET, level="normal")
 # Loop through all files in the folder_path and move them to their corresponding category folders.
 for name in os.listdir(folder_path):
     path = os.path.join(folder_path, name)
@@ -132,22 +145,22 @@ for name in os.listdir(folder_path):
         if dry_run:
             if dest_name != name:
                 print_msg(
-                    f"  [DRY RUN] Would move {name} → {category} (renamed to {dest_name})", level="normal")
+                    YELLOW + f"  [DRY RUN] Would move {name} → {category} (renamed to {dest_name})" + RESET, level="normal")
                 log(f"[DRY RUN] Would move {name} → {category} (renamed to {dest_name}).")
             else:
-                print_msg(f"  [DRY RUN] Would move {name} → {category}", level="normal")
+                print_msg(YELLOW + f"  [DRY RUN] Would move {name} → {category}" + RESET, level="normal")
                 log(f"[DRY RUN] Would move {name} → {category}.")
         else:
             shutil.move(path, dest_path)
             summary[category] += 1
             if dest_name != name:
-                print_msg(f"  - {name:<30} -> {category} (renamed to {dest_name})", level="normal")
+                print_msg(GREEN + f"  - {name:<30} -> {category} (renamed to {dest_name})" + RESET, level="normal")
                 log(f"Moved {name} → {category} (renamed to {dest_name}).")
             else:
-                print_msg(f"  - {name:<30} -> {category}", level="normal")
+                print_msg(GREEN + f"  - {name:<30} -> {category}" + RESET, level="normal")
                 log(f"Moved {name} → {category}.")
 
-print_msg("\nSummary of Files Moved:", level="normal")
+print_msg(CYAN + "\nSummary of Files Moved:" + RESET, level="normal")
 for category, count in summary.items():
     print_msg(f"  {category}: {count}", level="normal")
 log(f"Summary of Files Moved: {summary}")
