@@ -26,25 +26,55 @@ parser.add_argument(
     default=None,
     help="Folder path to organize (default: current working directory)",
 )
+parser.add_argument(
+    "--verbose",
+    action="store_true",
+    help="Enable extra detailed output",
+)
+parser.add_argument(
+    "--quiet",
+    action="store_true",
+    help="Suppress almost all output except errors",
+)
 args = parser.parse_args()
 dry_run = args.dry_run
 
+if args.quiet:
+    output_mode = "quiet"
+elif args.verbose:
+    output_mode = "verbose"
+else:
+    output_mode = "normal"
+
+
+def print_msg(message, level="normal"):
+    """Print message only if it matches the current output mode."""
+    if output_mode == "quiet":
+        if level == "error":
+            print(message)
+    elif output_mode == "normal":
+        if level in ("normal", "error"):
+            print(message)
+    else:  # verbose
+        print(message)
+
+
 if dry_run:
-    print("DRY RUN MODE — No files will be moved.\n")
+    print_msg("DRY RUN MODE — No files will be moved.\n", level="normal")
 
 log("=== New run started (dry-run mode)" if dry_run else "=== New run started (real mode)")
 
 folder_path = args.path if args.path else os.getcwd()
 if args.path:
-    print(f"Organizing folder: {folder_path}")
+    print_msg(f"Organizing folder: {folder_path}", level="normal")
 else:
-    print(f"No --path provided. Using current working directory: {folder_path}")
+    print_msg(f"No --path provided. Using current working directory: {folder_path}", level="normal")
 
 if not os.path.exists(folder_path):
-    print(f"Error: Path does not exist: {folder_path}")
+    print_msg(f"Error: Path does not exist: {folder_path}", level="error")
     exit(1)
 if not os.path.isdir(folder_path):
-    print(f"Error: Path is not a directory: {folder_path}")
+    print_msg(f"Error: Path is not a directory: {folder_path}", level="error")
     exit(1)
 
 categories = {
@@ -79,10 +109,10 @@ if not dry_run:
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
 
-print(categories)
+print_msg(str(categories), level="verbose")
 
-print("\nFiles moved:")
-print("-------------")
+print_msg("\nFiles moved:", level="normal")
+print_msg("-------------", level="normal")
 # Loop through all files in the folder_path and move them to their corresponding category folders.
 for name in os.listdir(folder_path):
     path = os.path.join(folder_path, name)
@@ -101,23 +131,23 @@ for name in os.listdir(folder_path):
                 n += 1
         if dry_run:
             if dest_name != name:
-                print(
-                    f"  [DRY RUN] Would move {name} → {category} (renamed to {dest_name})")
+                print_msg(
+                    f"  [DRY RUN] Would move {name} → {category} (renamed to {dest_name})", level="normal")
                 log(f"[DRY RUN] Would move {name} → {category} (renamed to {dest_name}).")
             else:
-                print(f"  [DRY RUN] Would move {name} → {category}")
+                print_msg(f"  [DRY RUN] Would move {name} → {category}", level="normal")
                 log(f"[DRY RUN] Would move {name} → {category}.")
         else:
             shutil.move(path, dest_path)
             summary[category] += 1
             if dest_name != name:
-                print(f"  - {name:<30} -> {category} (renamed to {dest_name})")
+                print_msg(f"  - {name:<30} -> {category} (renamed to {dest_name})", level="normal")
                 log(f"Moved {name} → {category} (renamed to {dest_name}).")
             else:
-                print(f"  - {name:<30} -> {category}")
+                print_msg(f"  - {name:<30} -> {category}", level="normal")
                 log(f"Moved {name} → {category}.")
 
-print("\nSummary of Files Moved:")
+print_msg("\nSummary of Files Moved:", level="normal")
 for category, count in summary.items():
-    print(f"  {category}: {count}")
+    print_msg(f"  {category}: {count}", level="normal")
 log(f"Summary of Files Moved: {summary}")

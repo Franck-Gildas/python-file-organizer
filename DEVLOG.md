@@ -15,3 +15,4 @@
 - Add a dry-run mode
 - Add logging to a file
 - Add --path argument
+- Add --verbose and --quiet modes
