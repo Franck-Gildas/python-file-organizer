@@ -24,7 +24,7 @@ parser.add_argument(
     "--path",
     type=str,
     default=None,
-    help="Folder path to organize (default: built-in path)",
+    help="Folder path to organize (default: current working directory)",
 )
 args = parser.parse_args()
 dry_run = args.dry_run
@@ -34,8 +34,11 @@ if dry_run:
 
 log("=== New run started (dry-run mode)" if dry_run else "=== New run started (real mode)")
 
-DEFAULT_FOLDER_PATH = r"C:\Users\frank\OneDrive\Desktop\test_downloads"
-folder_path = args.path if args.path else DEFAULT_FOLDER_PATH
+folder_path = args.path if args.path else os.getcwd()
+if args.path:
+    print(f"Organizing folder: {folder_path}")
+else:
+    print(f"No --path provided. Using current working directory: {folder_path}")
 
 if not os.path.exists(folder_path):
     print(f"Error: Path does not exist: {folder_path}")
