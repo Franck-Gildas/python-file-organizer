@@ -7,3 +7,7 @@
 - Added get_category() function
 - Added automatic folder creation
 - Added file moving logic
+
+## 2026-02-18
+
+- Handle filename conflicts gracefully

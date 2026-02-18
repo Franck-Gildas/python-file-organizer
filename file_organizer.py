@@ -14,6 +14,7 @@ categories = {
 }
 
 
+# Determines the category of a file based on its extension.
 def get_category(filename, categories):
     _, ext = os.path.splitext(filename)
     ext = ext.lower()
@@ -25,6 +26,7 @@ def get_category(filename, categories):
     return "Other"
 
 
+# Create a subdirectory for each category if it doesn't already exist.
 for category in categories:
     dir_path = os.path.join(folder_path, category)
     if not os.path.exists(dir_path):
@@ -32,10 +34,24 @@ for category in categories:
 
 print(categories)
 
+# Loop through all files in the folder_path and move them to their corresponding category folders.
 for name in os.listdir(folder_path):
     path = os.path.join(folder_path, name)
     if os.path.isfile(path):
         category = get_category(name, categories)
         dest_path = os.path.join(folder_path, category, name)
+        dest_name = name
+        if os.path.exists(dest_path):
+            base, ext = os.path.splitext(name)
+            n = 1
+            while True:
+                dest_name = f"{base} ({n}){ext}"
+                dest_path = os.path.join(folder_path, category, dest_name)
+                if not os.path.exists(dest_path):
+                    break
+                n += 1
         shutil.move(path, dest_path)
-        print(f"Moved {name} to {category}")
+        if dest_name != name:
+            print(f"Moved {name} to {category} as {dest_name}")
+        else:
+            print(f"Moved {name} to {category}")
