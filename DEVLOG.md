@@ -14,3 +14,4 @@
 - Print a summary of how many files were moved per category
 - Add a dry-run mode
 - Add logging to a file
+- Add --path argument

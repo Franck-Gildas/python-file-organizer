@@ -20,6 +20,12 @@ parser.add_argument(
     action="store_true",
     help="Preview actions without moving files",
 )
+parser.add_argument(
+    "--path",
+    type=str,
+    default=None,
+    help="Folder path to organize (default: built-in path)",
+)
 args = parser.parse_args()
 dry_run = args.dry_run
 
@@ -28,7 +34,15 @@ if dry_run:
 
 log("=== New run started (dry-run mode)" if dry_run else "=== New run started (real mode)")
 
-folder_path = r"C:\Users\frank\OneDrive\Desktop\test_downloads"
+DEFAULT_FOLDER_PATH = r"C:\Users\frank\OneDrive\Desktop\test_downloads"
+folder_path = args.path if args.path else DEFAULT_FOLDER_PATH
+
+if not os.path.exists(folder_path):
+    print(f"Error: Path does not exist: {folder_path}")
+    exit(1)
+if not os.path.isdir(folder_path):
+    print(f"Error: Path is not a directory: {folder_path}")
+    exit(1)
 
 categories = {
     "Images": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".svg", ".ico"],
