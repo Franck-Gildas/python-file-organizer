@@ -1,8 +1,20 @@
 import argparse
 import os
 import shutil
+from datetime import datetime
 
-parser = argparse.ArgumentParser(description="Organize files into category folders.")
+LOG_FILE = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), "organizer.log")
+
+
+def log(message):
+    """Append a timestamped message to organizer.log (UTF-8, append mode)."""
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
+        f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {message}\n")
+
+
+parser = argparse.ArgumentParser(
+    description="Organize files into category folders.")
 parser.add_argument(
     "--dry-run",
     action="store_true",
@@ -13,6 +25,8 @@ dry_run = args.dry_run
 
 if dry_run:
     print("DRY RUN MODE — No files will be moved.\n")
+
+log("=== New run started (dry-run mode)" if dry_run else "=== New run started (real mode)")
 
 folder_path = r"C:\Users\frank\OneDrive\Desktop\test_downloads"
 
@@ -70,17 +84,23 @@ for name in os.listdir(folder_path):
                 n += 1
         if dry_run:
             if dest_name != name:
-                print(f"  [DRY RUN] Would move {name} → {category} (renamed to {dest_name})")
+                print(
+                    f"  [DRY RUN] Would move {name} → {category} (renamed to {dest_name})")
+                log(f"[DRY RUN] Would move {name} → {category} (renamed to {dest_name}).")
             else:
                 print(f"  [DRY RUN] Would move {name} → {category}")
+                log(f"[DRY RUN] Would move {name} → {category}.")
         else:
             shutil.move(path, dest_path)
             summary[category] += 1
             if dest_name != name:
                 print(f"  - {name:<30} -> {category} (renamed to {dest_name})")
+                log(f"Moved {name} → {category} (renamed to {dest_name}).")
             else:
                 print(f"  - {name:<30} -> {category}")
+                log(f"Moved {name} → {category}.")
 
-print("\nSummary:")
+print("\nSummary of Files Moved:")
 for category, count in summary.items():
     print(f"  {category}: {count}")
+log(f"Summary of Files Moved: {summary}")
