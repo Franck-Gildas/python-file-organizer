@@ -13,6 +13,8 @@ categories = {
     "Other": [],
 }
 
+summary = {category: 0 for category in categories}
+
 
 # Determines the category of a file based on its extension.
 def get_category(filename, categories):
@@ -34,6 +36,8 @@ for category in categories:
 
 print(categories)
 
+print("\nFiles moved:")
+print("-------------")
 # Loop through all files in the folder_path and move them to their corresponding category folders.
 for name in os.listdir(folder_path):
     path = os.path.join(folder_path, name)
@@ -51,7 +55,12 @@ for name in os.listdir(folder_path):
                     break
                 n += 1
         shutil.move(path, dest_path)
+        summary[category] += 1
         if dest_name != name:
-            print(f"Moved {name} to {category} as {dest_name}")
+            print(f"  - {name:<30} -> {category} (renamed to {dest_name})")
         else:
-            print(f"Moved {name} to {category}")
+            print(f"  - {name:<30} -> {category}")
+
+print("\nSummary:")
+for category, count in summary.items():
+    print(f"  {category}: {count}")

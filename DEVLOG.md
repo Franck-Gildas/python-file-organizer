@@ -11,3 +11,4 @@
 ## 2026-02-18
 
 - Handle filename conflicts gracefully
+- Print a summary of how many files were moved per category
