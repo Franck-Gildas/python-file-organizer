@@ -1,5 +1,18 @@
+import argparse
 import os
 import shutil
+
+parser = argparse.ArgumentParser(description="Organize files into category folders.")
+parser.add_argument(
+    "--dry-run",
+    action="store_true",
+    help="Preview actions without moving files",
+)
+args = parser.parse_args()
+dry_run = args.dry_run
+
+if dry_run:
+    print("DRY RUN MODE — No files will be moved.\n")
 
 folder_path = r"C:\Users\frank\OneDrive\Desktop\test_downloads"
 
@@ -29,10 +42,11 @@ def get_category(filename, categories):
 
 
 # Create a subdirectory for each category if it doesn't already exist.
-for category in categories:
-    dir_path = os.path.join(folder_path, category)
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path)
+if not dry_run:
+    for category in categories:
+        dir_path = os.path.join(folder_path, category)
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
 
 print(categories)
 
@@ -54,12 +68,18 @@ for name in os.listdir(folder_path):
                 if not os.path.exists(dest_path):
                     break
                 n += 1
-        shutil.move(path, dest_path)
-        summary[category] += 1
-        if dest_name != name:
-            print(f"  - {name:<30} -> {category} (renamed to {dest_name})")
+        if dry_run:
+            if dest_name != name:
+                print(f"  [DRY RUN] Would move {name} → {category} (renamed to {dest_name})")
+            else:
+                print(f"  [DRY RUN] Would move {name} → {category}")
         else:
-            print(f"  - {name:<30} -> {category}")
+            shutil.move(path, dest_path)
+            summary[category] += 1
+            if dest_name != name:
+                print(f"  - {name:<30} -> {category} (renamed to {dest_name})")
+            else:
+                print(f"  - {name:<30} -> {category}")
 
 print("\nSummary:")
 for category, count in summary.items():

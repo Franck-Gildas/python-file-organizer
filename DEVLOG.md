@@ -12,3 +12,4 @@
 
 - Handle filename conflicts gracefully
 - Print a summary of how many files were moved per category
+- Add a dry-run mode
