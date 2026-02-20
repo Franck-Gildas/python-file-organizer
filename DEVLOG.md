@@ -17,3 +17,7 @@
 - Add --path argument
 - Add --verbose and --quiet modes
 - Add color‑coded terminal output
+
+## 2026-02-20
+
+- Package it as a pip‑installable CLI tool
