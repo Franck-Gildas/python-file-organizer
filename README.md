@@ -1,46 +1,157 @@
-# File Organizer Automation
+---
 
-A simple and effective Python script that automatically organizes files into category folders based on their extensions. It supports:
+📄 README.md
 
-- Automatic category detection
-- Folder creation
-- Safe file moving
-- Duplicate filename handling (`file (1).ext`, `file (2).ext`, etc.)
-- A summary of how many files were moved per category
+# File Organizer CLI
 
-This project is part of my automation learning journey and serves as a clean, portfolio‑ready example of practical scripting.
+A lightweight, fast, and user friendly command line tool that automatically organizes files into category based folders.  
+Built with clarity, safety, and real world workflows in mind — featuring dry run previews, verbose logging, quiet mode, and clean summaries.
 
 ---
 
-## Features
+## 🚀 Features
 
-### ✔ Categorizes files into:
+- **Automatic file categorization**  
+  Sorts files into folders like `Images`, `Documents`, `PDFs`, `Videos`, `Audio`, `Archives`, and `Other`.
 
-- Images
-- Documents
-- PDFs
-- Videos
-- Audio
-- Archives
-- Other
+- **Dry run mode**  
+  Preview all actions without moving any files.
 
-### ✔ Handles duplicate filenames
+- **Verbose mode**  
+  See detailed logs of every decision and action.
 
-Automatically renames files using `(1)`, `(2)`, etc.
+- **Quiet mode**  
+  Suppress all output except errors.
 
-### ✔ Prints a summary
+- **Default path behavior**  
+  If no `--path` is provided, the tool organizes the current working directory.
 
-Shows how many files were moved into each category.
+- **Logging**  
+  All operations are recorded in `organizer.log` with timestamps.
+
+- **Idempotent**  
+  Safe to run multiple times — already organized files are not moved again.
 
 ---
 
-## How to Use
+## 📦 Installation
 
-1. Clone the repository
-2. Edit the `folder_path` variable in `file_organizer.py` to point to the folder you want to organize
-3. Run:
+### Optional: Create a virtual environment
+
+This is recommended to keep your Python tools isolated:
 
 ```bash
-python file_organizer.py
-
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# macOS/Linux
+source venv/bin/activate
+________________________________________
+Standard installation (most users)
+python -m pip install .
+This installs the tool normally into your Python environment.
+________________________________________
+Editable installation (useful when working on the code)
+If you want your local changes to take effect immediately without reinstalling each time:
+python -m pip install -e .
+Editable mode links the installed command to your project folder, making it easier to test and iterate while modifying the code.
+________________________________________
+🧠 Usage
+Organize the current directory
+file-organizer
+Organize a specific folder
+file-organizer --path "C:\Downloads"
+________________________________________
+🔍 Dry Run Mode (Safe Preview)
+Preview all actions without moving files:
+file-organizer --dry-run --path "C:\Downloads"
+________________________________________
+📢 Verbose Mode
+Show detailed logs of every action:
+file-organizer --verbose --path "C:\Downloads"
+________________________________________
+🤫 Quiet Mode
+Suppress all output except errors:
+file-organizer --quiet --path "C:\Downloads"
+________________________________________
+🗂 Categories
+Files are automatically sorted into:
+Category	Extensions (examples)
+Images	.jpg, .jpeg, .png, .gif, .bmp
+Documents	.txt, .docx, .xlsx, .csv
+PDFs	.pdf
+Videos	.mp4, .mov, .avi
+Audio	.mp3, .wav
+Archives	.zip, .rar, .7z
+Other	Everything else
+________________________________________
+🧪 Full Test Suite
+Use this checklist to verify all features:
+1. Help command
+file-organizer --help
+2. Dry run mode
+file-organizer --dry-run --path "C:\test-organizer"
+3. Real run
+file-organizer --path "C:\test-organizer"
+4. Default path behavior
+cd C:\test-organizer
+file-organizer
+5. Verbose mode
+file-organizer --verbose --path "C:\test-organizer"
+6. Quiet mode
+file-organizer --quiet --path "C:\test-organizer"
+7. Logging
+Check:
+organizer.log
+8. Unknown extensions
+Ensure .xyz files go to Other.
+9. Nested folders
+Tool should NOT recurse into subfolders.
+10. Repeated runs
+Running twice should move 0 files the second time.
+11. Invalid path
+file-organizer --path "C:\does-not-exist"
+________________________________________
+🧰 Tech Stack
+•	Python 3.13
+•	Standard library only:
+o	os
+o	shutil
+o	argparse
+o	logging
+o	pathlib
+No external dependencies.
+________________________________________
+🎯 Why This Project Exists
+I built this tool to solve a real world problem:
+keeping messy folders (especially Downloads) clean and organized automatically.
+It also serves as a demonstration of:
+•	clean CLI design
+•	robust error handling
+•	user friendly options
+•	logging and idempotent behavior
+•	packaging a Python project into an installable command line tool
+This project is part of my growing portfolio of automation tools.
+________________________________________
+🛠 Development
+If you're working on the codebase, editable mode makes it easy to test changes:
+python -m pip install -e .
+Use the test suite above to validate behavior.
+________________________________________
+📌 Roadmap
+•	Recursive mode (optional)
+•	Custom category configuration file
+•	JSON output mode
+•	Progress bar
+•	Duplicate file handling
+•	PyPI release
+________________________________________
+📄 License
+MIT License
+________________________________________
+👤 Author
+Franck Gildas Kamga
+Bathurst, NB, Canada
+GitHub: https://github.com/Franck-Gildas
+LinkedIn: https://www.linkedin.com/in/frankygildas/
 ```
